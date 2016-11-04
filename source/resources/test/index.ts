@@ -1,2 +1,2 @@
-export * from './model';
-export * from './resource';
+export * from './testModel';
+export * from './testResource';
