@@ -8,13 +8,18 @@ import { TestResource } from './resources/test';
 @Injectable()
 export class App {
 	private app: Application;
-	private database: Database;
 	private config: Config;
+	private database: Database;
+	private testResource: TestResource;
 
-	constructor(app: ExpressApplication, config: Config) {
+	constructor(app: ExpressApplication
+			, config: Config
+			, database: Database
+			, testResource: TestResource) {
 		this.app = <any>app;
 		this.config = config;
-		this.database = new Database(config);
+		this.database = database;
+		this.testResource = testResource;
 	}
 
 	start() {
@@ -30,7 +35,6 @@ export class App {
 	}
 
 	routes() {
-		const test = new TestResource(this.app, this.config);
-		test.register('/test');
+		this.testResource.register('/test');
 	}
 }
