@@ -21,9 +21,40 @@ export class TestResource {
 			console.log('GET: ' + path);
 			Test.find((err, result) => {
 				if (err) {
-					res.status(500).send({ error: err })
+					res.status(500).send({ error: err });
 				}
-				res.send(result)
+				res.send(result);
+			});
+		});
+
+		this.app.post(path, (req, res) => {
+			console.log('POST: ' + path, req.body);
+			Test.create(req.body, (err, result) => {
+				if (err) {
+					res.status(500).send({ error: err });
+				}
+				res.send(result);
+			});
+		});
+
+		this.app.put(path, (req, res) => {
+			console.log('PUT: ' + path, req.body);
+			
+			Test.update({ _id: req.body._id }, req.body, (err, result) => {
+				if (err) {
+					res.status(500).send({ error: err });
+				}
+				res.send(result);
+			});
+		});
+
+		this.app.delete(path, (req, res) => {
+			console.log('DELETE: ' + path, req.body);
+			Test.remove(req.body, (err) => {
+				if (err) {
+					res.status(500).send({ error: err });
+				}
+				res.send();
 			});
 		});
 	}
