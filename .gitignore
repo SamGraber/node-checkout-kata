@@ -3,3 +3,9 @@
 
 # Built files
 /build/
+
+# Data folder
+/data/
+
+# Config files
+/config/appConfig*

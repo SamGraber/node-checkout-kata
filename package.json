@@ -5,7 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "build": "tsc --outDir build",
-    "start": "ts-node index"
+    "database": "mongod --dbpath ./data",
+    "di": "ts-node index",
+    "start": "ts-node server"
   },
   "keywords": [
     "Typescript"
@@ -13,11 +15,16 @@
   "author": "Sam Graber",
   "license": "ISC",
   "dependencies": {
+    "@types/express": "^4.0.33",
     "@types/lodash": "^4.14.37",
+    "@types/mongoose": "^4.5.40",
     "@types/node": "^6.0.45",
     "ditsy": "0.0.1",
+    "express": "^4.14.0",
     "lodash": "^4.16.4",
+    "mongoose": "^4.6.6",
     "reflect-metadata": "^0.1.8",
+    "rxjs": "^5.0.0-rc.1",
     "ts-node": "^1.6.1",
     "typescript": "^2.0.7"
   }
