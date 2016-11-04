@@ -2,11 +2,10 @@
   "name": "di-test",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "server.ts",
   "scripts": {
     "build": "tsc --outDir build",
     "database": "mongod --dbpath ./data",
-    "di": "ts-node index",
     "start": "ts-node server"
   },
   "keywords": [
