@@ -1,6 +1,6 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Model, Document } from 'mongoose';
 
-export interface ITestObj {
+export interface ITestObj extends Document {
 	name: string,
 };
 
@@ -8,5 +8,5 @@ export const TestSchema = new Schema({
 	name: String,
 });
 
-export const Test = model('Test', TestSchema);
+export const Test: Model<ITestObj> = model<ITestObj>('Test', TestSchema);
 

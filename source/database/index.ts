@@ -1,11 +1,13 @@
 import * as mongoose from 'mongoose';
+import { Injectable } from 'ditsy';
 import { Observable } from 'rxjs/Rx';
-import { IConfig } from '../../config';
+import { Config } from '../../config';
 
+@Injectable()
 export class Database {
-	private config: IConfig;
+	private config: Config;
 
-	constructor(config: IConfig) {
+	constructor(config: Config) {
 		this.config = config;
 	}
 

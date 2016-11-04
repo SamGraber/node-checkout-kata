@@ -1,13 +1,16 @@
 import { Application } from 'express';
-import { IConfig } from '../../../config';
+import { Injectable } from 'ditsy';
+import { ExpressApplication } from '../../expressApp';
+import { Config } from '../../../config';
 import { Test } from './model';
 
+@Injectable()
 export class TestResource {
 	app: Application;
-	config: IConfig;
+	config: Config;
 
-	constructor(app: Application, config: IConfig) {
-		this.app = app;
+	constructor(app: ExpressApplication, config: Config) {
+		this.app = <any>app;
 		this.config = config;
 	}
 

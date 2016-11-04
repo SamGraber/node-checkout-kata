@@ -19,4 +19,16 @@ export const defaultConfig: IConfig = {
 	dbName: 'di-test',
 };
 
-export const config = assign({}, defaultConfig, appConfig);
+export class Config implements IConfig {
+	port: number;
+	baseUrl: string;
+	dbHost: string;
+	dbName: string;
+
+	constructor() {
+		this.port = appConfig.port || defaultConfig.port; 
+		this.baseUrl = appConfig.baseUrl || defaultConfig.baseUrl; 
+		this.dbHost = appConfig.dbHost || defaultConfig.dbHost; 
+		this.dbName = appConfig.dbName || defaultConfig.dbName; 
+	}
+}

@@ -1,5 +1,6 @@
+import 'reflect-metadata/Reflect';
 import { App } from './source/app';
-import { config, IConfig } from './config';
+import { injector } from './source/module';
 
-const app = new App(config);
+const app = injector.get(App);
 app.start();

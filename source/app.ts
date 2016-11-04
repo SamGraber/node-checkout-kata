@@ -1,15 +1,18 @@
-import * as express from 'express';
-import { IConfig } from '../config';
+import { Application } from 'express';
+import { Injectable } from 'ditsy';
+import { Config } from '../config';
 import { Database } from './database';
+import { ExpressApplication } from './expressApp';
 import { TestResource } from './resources/test';
 
+@Injectable()
 export class App {
-	private app: express.Application;
+	private app: Application;
 	private database: Database;
-	private config: IConfig;
+	private config: Config;
 
-	constructor(config: IConfig) {
-		this.app = express();
+	constructor(app: ExpressApplication, config: Config) {
+		this.app = <any>app;
 		this.config = config;
 		this.database = new Database(config);
 	}
