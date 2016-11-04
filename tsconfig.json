@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"declaration": true,
+		"inlineSourceMap": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"strictNullChecks": false,
+		"target": "ES5",
+		"typeRoots": [
+			"node_modules/@types"
+		]
+	},
+	"exclude": [
+		"node_modules",
+		"build"
+	]
+}
