@@ -1,5 +1,5 @@
-declare module 'ditsy' {
-	export const Injectable: any;
-	export const Injector: any;
-}
+import * as ditsy from 'ditsy/target/src/core/ditsy';
 
+declare module 'ditsy' {
+	export default ditsy;
+}
