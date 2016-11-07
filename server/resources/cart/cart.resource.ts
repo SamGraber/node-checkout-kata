@@ -1,9 +1,11 @@
 import { Application } from 'express';
 import { Injectable } from 'ditsy';
-import { find, map, filter, reduce } from 'lodash';
+import { Observable } from 'rxjs';
+import { find, map, filter, reduce, sortBy, reverse, clone } from 'lodash';
 import { ExpressApplication } from '../../expressApp';
 import { Config } from '../../../config';
 import { Cart, ICart, ICheckoutItem } from './cart.model';
+import { Offer, IOffer } from '../offer/offer.model';
 import { createResource } from '../resource';
 
 @Injectable()
@@ -53,8 +55,9 @@ export class CartResource {
 				};
 				cart.items = [...cart.items, updatedItem];
 			}
-			this.calculateSubtotal(cart);
-			return Cart.update(cart).map(() => cart);
+			return this.calculateSubtotal(cart)
+						.switchMap(() => Cart.update(cart)
+						.map(() => cart));
 		}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 	}
 
@@ -68,12 +71,32 @@ export class CartResource {
 				cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
 				cart.items = filter(cart.items, item => item.quantity);
 			}
-			this.calculateSubtotal(cart);
-			return Cart.update(cart).map(() => cart);
+			return this.calculateSubtotal(cart)
+						.switchMap(() => Cart.update(cart)
+						.map(() => cart));
 		}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 	}
 
-	calculateSubtotal(cart: ICart): void {
-		cart.subtotal = reduce(cart.items, (total, item) => total + (item.price * item.quantity), 0);
+	calculateSubtotal(cart: ICart): Observable<void> {
+		return Offer.find().do((offers: IOffer[]) => {
+			cart.subtotal = reduce(cart.items, (total, item) => {
+				item = clone(item);
+				const baseOffer = { 
+					price: item.price,
+					quantity: 1,
+				};
+				const offersForThisItem = [...filter(offers, offer => offer.sku === item.sku), baseOffer];
+				const sortedOffers = reverse(sortBy(offersForThisItem, 'quantity'));
+				const itemResult = reduce(sortedOffers, (current, offer) => {
+					const offerQuantity = Math.floor((current.item.quantity / offer.quantity));
+					current.item.quantity -= offerQuantity * offer.quantity;
+					return {
+						itemTotal: current.itemTotal + (offerQuantity * offer.price),
+						item: current.item, 
+					};
+				}, { itemTotal: 0, item });
+				return total + itemResult.itemTotal;
+			}, 0);
+		}).map(() => null);
 	}
 }

@@ -10,7 +10,7 @@ export class ModelService<T extends Document> {
 		this.model = model;
 	}
 	
-	find(query: any): Observable<T[]> {
+	find(query: any = {}): Observable<T[]> {
 		return new Observable(observer => {
 			this.model.find(query, (error, result) => {
 				if (error) {
