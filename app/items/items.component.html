@@ -1,11 +1,8 @@
 <h3>Items</h3>
 <div class="row" *ngFor="let item of items">
-	<div class="col-sm-4">{{item.sku}}</div>
+	<div class="col-sm-6">{{item.sku}}</div>
 	<div class="col-sm-4">{{item.price}}</div>
 	<div class="col-sm-2">
 		<button class="btn btn-default" (click)="add(item)">+</button>
-	</div>
-	<div class="col-sm-2">
-		<button class="btn btn-default" (click)="remove(item)">-</button>
 	</div>
 </div>

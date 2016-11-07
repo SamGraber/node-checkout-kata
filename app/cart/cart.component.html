@@ -1,0 +1,11 @@
+<div *ngIf="cartService.cart$ | async">
+	<h3>Cart</h3>
+	<div class="row" *ngFor="let item of (cartService.cart$ | async).items">
+		<div class="col-sm-6">{{item.sku}}</div>
+		<div class="col-sm-4">{{item.quantity}}</div>
+		<div class="col-sm-2">
+			<button class="btn btn-default" (click)="remove(item)">-</button>
+		</div>
+	</div>
+	<h4>Subtotal: {{(cartService.cart$ | async).subtotal || 0}}</h4>
+</div>

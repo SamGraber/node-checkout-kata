@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
+import { CartService } from '../cart/cart.service';
 
 @Component({
 	moduleId: module.id,
@@ -9,7 +10,8 @@ import { Http } from '@angular/http';
 export class ItemsComponent implements OnInit {
 	items: any[];
 	
-	constructor(private http: Http) {}
+	constructor(private http: Http
+			, private cartService: CartService) {}
 
 	ngOnInit(): void {
 		this.http.get('http://localhost:3000/api/item')
@@ -18,10 +20,6 @@ export class ItemsComponent implements OnInit {
 	}
 
 	add(item: any): void {
-		console.log(item);
-	}
-
-	remove(item: any): void {
-		console.log(item);
+		this.cartService.addToCart(item);
 	}
 }
