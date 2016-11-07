@@ -53,7 +53,7 @@ export class CartResource {
 				};
 				cart.items = [...cart.items, updatedItem];
 			}
-			return Cart.update(cart);
+			return Cart.update(cart).map(() => cart);
 		}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 	}
 
@@ -67,7 +67,7 @@ export class CartResource {
 				cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
 				cart.items = filter(cart.items, item => item.quantity);
 			}
-			return Cart.update(cart);
+			return Cart.update(cart).map(() => cart);
 		}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 	}
 }
