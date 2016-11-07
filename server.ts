@@ -1,6 +1,6 @@
 import 'reflect-metadata/Reflect';
-import { App } from './source/app';
-import { injector } from './source/module';
+import { App } from './server/app';
+import { injector } from './server/module';
 
 const app = injector.get(App);
 app.start();

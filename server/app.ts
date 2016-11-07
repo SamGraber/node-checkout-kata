@@ -3,27 +3,37 @@ import { Injectable } from 'ditsy';
 import { Config } from '../config';
 import { Database } from './database';
 import { ExpressApplication } from './expressApp';
-import { TestResource } from './resources/test';
+import { ItemResource } from './resources/item';
+import { OfferResource } from './resources/offer';
+import { CartResource } from './resources/cart';
 
 @Injectable()
 export class App {
 	private app: Application;
 	private config: Config;
 	private database: Database;
-	private testResource: TestResource;
+	private itemResource: ItemResource;
+	private offerResource: OfferResource;
+	private cartResource: CartResource;
 
 	constructor(app: ExpressApplication
 			, config: Config
 			, database: Database
-			, testResource: TestResource) {
+			, itemResource: ItemResource
+			, offerResource: OfferResource
+			, cartResource: CartResource) {
 		this.app = <any>app;
 		this.config = config;
 		this.database = database;
-		this.testResource = testResource;
+		this.itemResource = itemResource;
+		this.offerResource = offerResource;
+		this.cartResource = cartResource;
 	}
 
 	start() {
 		this.routes();
+		// this.itemResource.seed();
+		// this.offerResource.seed();
 
 		this.database.connect().subscribe(() => {
 			this.app.listen(this.config.port, () => {
@@ -35,6 +45,8 @@ export class App {
 	}
 
 	routes() {
-		this.testResource.register('/test');
+		this.itemResource.register('/item');
+		this.offerResource.register('/offer');
+		this.cartResource.register('/cart');
 	}
 }
