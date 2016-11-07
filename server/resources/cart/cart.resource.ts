@@ -1,9 +1,9 @@
 import { Application } from 'express';
 import { Injectable } from 'ditsy';
-import { find, map, filter } from 'lodash';
+import { find, map, filter, reduce } from 'lodash';
 import { ExpressApplication } from '../../expressApp';
 import { Config } from '../../../config';
-import { Cart, ICheckoutItem } from './cart.model';
+import { Cart, ICart, ICheckoutItem } from './cart.model';
 import { createResource } from '../resource';
 
 @Injectable()
@@ -53,6 +53,7 @@ export class CartResource {
 				};
 				cart.items = [...cart.items, updatedItem];
 			}
+			this.calculateSubtotal(cart);
 			return Cart.update(cart).map(() => cart);
 		}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 	}
@@ -67,7 +68,12 @@ export class CartResource {
 				cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
 				cart.items = filter(cart.items, item => item.quantity);
 			}
+			this.calculateSubtotal(cart);
 			return Cart.update(cart).map(() => cart);
 		}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
+	}
+
+	calculateSubtotal(cart: ICart): void {
+		cart.subtotal = reduce(cart.items, (total, item) => total + (item.price * item.quantity), 0);
 	}
 }
