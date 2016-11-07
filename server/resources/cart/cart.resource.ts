@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import { Injectable } from 'ditsy';
-import { find, map } from 'lodash';
+import { find, map, filter } from 'lodash';
 import { ExpressApplication } from '../../expressApp';
 import { Config } from '../../../config';
 import { Cart, ICheckoutItem } from './cart.model';
@@ -35,19 +35,34 @@ export class CartResource {
 				let updatedItem: ICheckoutItem = find(cart.items, item => item.sku === itemToIncrement.sku);
 				if (updatedItem) {
 					updatedItem.quantity += 1;
+					cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
 				} else {
 					updatedItem = <any>{
 						sku: itemToIncrement.sku,
 						quantity: 1,
 						price: itemToIncrement.price,
 					};
+					cart.items = [...cart.items, updatedItem];
 				}
-				cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
 				return Cart.update(cart);
 			}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 		});
 
-		this.app.delete(path + '/remove', (req, res) => {
+		this.app.put(path + '/remove', (req, res) => {
+			console.log('REMOVE ITEM: ' + path, req.body);
+			const itemToIncrement: ICheckoutItem = req.body.item;
+			Cart.find({ userId: req.body.userId }).switchMap(([cart]) => {
+				let updatedItem: ICheckoutItem = find(cart.items, item => item.sku === itemToIncrement.sku);
+				if (updatedItem) {
+					updatedItem.quantity -= 1;
+					cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
+					cart.items = filter(cart.items, item => item.quantity);
+				}
+				return Cart.update(cart);
+			}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
+		});
+
+		this.app.delete(path, (req, res) => {
 			console.log('DELETE: ' + path, req.body);
 			Cart.remove(req.body).subscribe(() => res.send(), error => res.status(500).send({ error: error }));
 		});
