@@ -1,2 +1,13 @@
-<h1>Angular 2 App</h1>
-{{offers | json}}
+<div class="container">
+	<h1>Checkout app</h1>
+	<div class="row">
+		<div class="col-sm-6">
+			<h3>Offers</h3>
+			<div class="row" *ngFor="let offer of offers">
+				<div class="col-sm-6">{{offer.sku}}</div>
+				<div class="col-sm-6">{{offer.quantity}} for {{offer.price}}</div>
+			</div>
+			<ch-items></ch-items>
+		</div>
+	</div>
+</div>
