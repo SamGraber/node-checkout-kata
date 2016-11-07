@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import { Model, Document } from 'mongoose';
+import { ModelService, Document } from '../database/model.service';
 
 export interface IResourceOptions {
 	useGet?: boolean;
@@ -8,55 +8,34 @@ export interface IResourceOptions {
 	useDelete?: boolean;
 }
 
-export function createResource<T extends Document>(app: Application, path: string, model: Model<T>, options?: IResourceOptions): void {
+export function createResource<T extends Document>(app: Application, path: string, model: ModelService<T>, options?: IResourceOptions): void {
 	options = defaultOptions(options);
 	
 	if (options.useGet) {
 		app.get(path, (req, res) => {
 			console.log('GET: ' + path);
-			model.find((err, result) => {
-				if (err) {
-					res.status(500).send({ error: err });
-				}
-				res.send(result);
-			});
+			model.find({}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 		});
 	}
 
 	if (options.usePost) {
 		app.post(path, (req, res) => {
 			console.log('POST: ' + path, req.body);
-			model.create(req.body, (err, result) => {
-				if (err) {
-					res.status(500).send({ error: err });
-				}
-				res.send(result);
-			});
+			model.create(req.body).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 		});
 	}
 
 	if (options.usePut) {
 		app.put(path, (req, res) => {
 			console.log('PUT: ' + path, req.body);
-			
-			model.update({ _id: req.body._id }, req.body, (err, result) => {
-				if (err) {
-					res.status(500).send({ error: err });
-				}
-				res.send(result);
-			});
+			model.update(req.body).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 		});
 	}
 
 	if (options.useDelete) {
 		app.delete(path, (req, res) => {
 			console.log('DELETE: ' + path, req.body);
-			model.remove(req.body, (err) => {
-				if (err) {
-					res.status(500).send({ error: err });
-				}
-				res.send();
-			});
+			model.remove(req.body).subscribe(() => res.send(), error => res.status(500).send({ error: error }));
 		});
 	}
 }
