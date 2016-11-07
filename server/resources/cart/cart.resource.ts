@@ -28,43 +28,46 @@ export class CartResource {
 			Cart.create(req.body).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 		});
 
-		this.app.put(path + '/add', (req, res) => {
-			console.log('ADD ITEM: ' + path, req.body);
-			const itemToIncrement: ICheckoutItem = req.body.item;
-			Cart.find({ userId: req.body.userId }).switchMap(([cart]) => {
-				let updatedItem: ICheckoutItem = find(cart.items, item => item.sku === itemToIncrement.sku);
-				if (updatedItem) {
-					updatedItem.quantity += 1;
-					cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
-				} else {
-					updatedItem = <any>{
-						sku: itemToIncrement.sku,
-						quantity: 1,
-						price: itemToIncrement.price,
-					};
-					cart.items = [...cart.items, updatedItem];
-				}
-				return Cart.update(cart);
-			}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
-		});
-
-		this.app.put(path + '/remove', (req, res) => {
-			console.log('REMOVE ITEM: ' + path, req.body);
-			const itemToIncrement: ICheckoutItem = req.body.item;
-			Cart.find({ userId: req.body.userId }).switchMap(([cart]) => {
-				let updatedItem: ICheckoutItem = find(cart.items, item => item.sku === itemToIncrement.sku);
-				if (updatedItem) {
-					updatedItem.quantity -= 1;
-					cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
-					cart.items = filter(cart.items, item => item.quantity);
-				}
-				return Cart.update(cart);
-			}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
-		});
+		this.app.put(path + '/add', (req, res) => this.addItem(path + '/add', req, res));
+		this.app.put(path + '/remove', (req, res) => this.removeItem(path + '/remove', req, res));
 
 		this.app.delete(path, (req, res) => {
 			console.log('DELETE: ' + path, req.body);
 			Cart.remove(req.body).subscribe(() => res.send(), error => res.status(500).send({ error: error }));
 		});
+	}
+
+	addItem(path, req, res): void {
+		console.log('ADD ITEM: ' + path, req.body);
+		const itemToIncrement: ICheckoutItem = req.body.item;
+		Cart.find({ userId: req.body.userId }).switchMap(([cart]) => {
+			let updatedItem: ICheckoutItem = find(cart.items, item => item.sku === itemToIncrement.sku);
+			if (updatedItem) {
+				updatedItem.quantity += 1;
+				cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
+			} else {
+				updatedItem = <any>{
+					sku: itemToIncrement.sku,
+					quantity: 1,
+					price: itemToIncrement.price,
+				};
+				cart.items = [...cart.items, updatedItem];
+			}
+			return Cart.update(cart);
+		}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
+	}
+
+	removeItem(path, req, res): void {
+		console.log('REMOVE ITEM: ' + path, req.body);
+		const itemToIncrement: ICheckoutItem = req.body.item;
+		Cart.find({ userId: req.body.userId }).switchMap(([cart]) => {
+			let updatedItem: ICheckoutItem = find(cart.items, item => item.sku === itemToIncrement.sku);
+			if (updatedItem) {
+				updatedItem.quantity -= 1;
+				cart.items = map(cart.items, item => item.sku === itemToIncrement.sku ? updatedItem : item);
+				cart.items = filter(cart.items, item => item.quantity);
+			}
+			return Cart.update(cart);
+		}).subscribe(result => res.send(result), error => res.status(500).send({ error: error }));
 	}
 }
