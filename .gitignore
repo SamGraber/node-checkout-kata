@@ -3,6 +3,14 @@
 
 # Built files
 /build/
+/app/**/*.js
+/app/**/*d.ts
+/server/**/*.js
+/server/**/*d.ts
+/config/**/*.js
+/config/**/*d.ts
+server.js
+server.d.ts
 
 # Data folder
 /data/
